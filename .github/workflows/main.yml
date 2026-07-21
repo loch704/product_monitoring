@@ -30,3 +30,11 @@ jobs:
         #  CHAT_ID: ${{ secrets.CHAT_ID }}
         run: |
           python monitor.py
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add notified_products.txt
+          git diff --staged --quiet || git commit -m "Update notified products"
+          git push
