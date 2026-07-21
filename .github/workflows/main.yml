@@ -4,9 +4,9 @@ permissions:
   contents: write
 
 on:
-  #schedule:
+  schedule:
     # 每15分鐘執行一次
-    #- cron: '*/15 * * * *'
+    - cron: '*/1 * * * *'
 
   workflow_dispatch:
 
