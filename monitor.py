@@ -17,8 +17,7 @@ for product in data["products"]:
 		🚨 New Product Found
         {title}https://lastchancetoy.com/products/{product['handle']}
         """
-		
-		requests.post(
+        requests.post(
 			f"https://api.telegram.org/bot8872232866:AAFrLRFygu-w7f2lrPCPeeZtZoAX-2VavuE/sendMessage",
 			data={
 				"chat_id": 354370983,
