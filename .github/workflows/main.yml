@@ -1,9 +1,9 @@
 name: LastChanceToy Monitor
 
 on:
-  schedule:
+  #schedule:
     # 每15分鐘執行一次
-    - cron: '*/15 * * * *'
+    #- cron: '*/15 * * * *'
 
   workflow_dispatch:
 
@@ -29,4 +29,4 @@ jobs:
         #  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         #  CHAT_ID: ${{ secrets.CHAT_ID }}
         run: |
-          python testing.py
+          python monitor.py
