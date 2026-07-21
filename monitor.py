@@ -51,3 +51,9 @@ https://lastchancetoy.com/products/{product['handle']}
             print(f"Notify: {title}")
 
             new_products.append(product_id)
+
+if new_products:
+
+    with open("notified_products.txt", "a", encoding="utf-8") as f:
+        for item in new_products:
+            f.write(item + "\n")
