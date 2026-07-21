@@ -4,5 +4,13 @@ url = "https://lastchancetoy.com/products.json"
 
 data = requests.get(url).json()
 
+KEYWORDS = [
+    "Arranged Wigs",
+]
+
 for product in data["products"]:
-    print(product["title"])
+
+    title = product["title"]
+
+    if any(k in title.lower() for k in KEYWORDS):
+        print(title)
