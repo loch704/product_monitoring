@@ -11,4 +11,3 @@ payload = {
 }
 
 requests.post(url, data=payload)
-``
