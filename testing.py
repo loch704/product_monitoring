@@ -10,4 +10,7 @@ payload = {
     "text": "🚀 Telegram Bot Test Success!"
 }
 
-requests.post(url, data=payload)
+response = requests.post(url, data=payload)
+
+print(response.status_code)
+print(response.text)
