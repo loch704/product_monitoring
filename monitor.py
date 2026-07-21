@@ -8,6 +8,11 @@ URL = "https://lastchancetoy.com/products.json"
 
 KEYWORDS = [
     "arranged wigs",
+    "beyblade",
+    "beybladex",
+    "beyblade x",
+    "ux-21"
+    "ux21"
 ]
 
 # 讀取已通知產品
