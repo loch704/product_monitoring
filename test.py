@@ -9,4 +9,4 @@ headers = {
 
 html = requests.get(url, headers=headers).text
 
-print(html[:1000])
+print(html)
