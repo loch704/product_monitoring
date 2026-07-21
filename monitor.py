@@ -11,7 +11,7 @@ KEYWORDS = [
     "beyblade",
     "beybladex",
     "beyblade x",
-    "ux-21"
+    "ux-21",
     "ux21"
 ]
 
