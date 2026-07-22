@@ -1,5 +1,8 @@
 import requests
 import os
+import json
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 from datetime import datetime
 
 print(f"[{datetime.now()}] Monitor Started")
@@ -133,27 +136,122 @@ https://www.hobbylandeshop.com{product['link']}
 '''
 
 def monitor_toysrus(known_products):
-    url = (
+
+    print(f"[{datetime.now()}] Checking ToysRUs HK")
+
+    base_url = "https://www.toysrus.com.hk"
+
+    search_url = (
         "https://www.toysrus.com.hk/on/demandware.store/"
-        "Sites-ToysRUs_HK-Site/zh_HK/"
-        "Search-UpdateGrid"
+        "Sites-ToysRUs_HK-Site/zh_HK/Search-UpdateGrid"
     )
-    
-    params = {
-        "cgid": "preorder_hk",
-        "start": 0,
-        "sz": 48
+
+    headers = {
+        "User-Agent": "Mozilla/5.0"
     }
-    
-    html = requests.get(
-        url,
-        params=params,
-        headers={
-            "User-Agent": "Mozilla/5.0"
+
+    start = 0
+    size = 48
+    total_found = 0
+
+    while True:
+
+        params = {
+            "cgid": "preorder_hk",
+            "start": start,
+            "sz": size
         }
-    ).text
-    
-    print(html[:5000])
+
+        response = requests.get(
+            search_url,
+            params=params,
+            headers=headers,
+            timeout=20
+        )
+
+        print(f"[{datetime.now()}] ToysRUs start={start}, status={response.status_code}")
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        product_tiles = soup.select("div.product-tile")
+
+        print(f"[{datetime.now()}] ToysRUs products found on page: {len(product_tiles)}")
+
+        if not product_tiles:
+            break
+
+        for tile in product_tiles:
+
+            metadata_raw = tile.get("data-metadata")
+
+            if not metadata_raw:
+                continue
+
+            try:
+                metadata = json.loads(metadata_raw)
+            except Exception as e:
+                print(f"[{datetime.now()}] ToysRUs metadata parse error: {e}")
+                continue
+
+            product_id_raw = metadata.get("sku") or metadata.get("id")
+            title = metadata.get("name_local") or metadata.get("name") or ""
+            brand = metadata.get("brand") or ""
+            price = metadata.get("price") or ""
+
+            if not product_id_raw or not title:
+                continue
+
+            searchable_text = f"{title} {brand}".lower()
+
+            if not any(k.lower() in searchable_text for k in KEYWORDS):
+                continue
+
+            # Check sold out / unavailable text inside product tile
+            tile_text = tile.get_text(" ", strip=True)
+
+            if "暫時缺貨" in tile_text or "售罄" in tile_text or "out of stock" in tile_text.lower():
+                print(f"[{datetime.now()}] Skip ToysRUs out of stock: {title}")
+                continue
+
+            product_link_tag = tile.select_one("a[data-gtm-product-link]")
+
+            if product_link_tag and product_link_tag.get("href"):
+                product_link = urljoin(base_url, product_link_tag.get("href"))
+            else:
+                product_link = "https://www.toysrus.com.hk/zh-hk/whats-on/new-arrivals/pre-order/"
+
+            unique_id = f"toysrus|{product_id_raw}"
+
+            if unique_id in known_products:
+                print(f"[{datetime.now()}] Skip known ToysRUs: {title}")
+                continue
+
+            message = f"""
+🚨 New Product Found
+
+Source: ToysRUs HK
+
+{title}
+
+Price: ${price}
+
+{product_link}
+"""
+
+            send_telegram(message)
+
+            known_products.add(unique_id)
+            total_found += 1
+
+            print(f"[{datetime.now()}] Notify ToysRUs: {title}")
+
+        # If page has fewer than size, no more pages
+        if len(product_tiles) < size:
+            break
+
+        start += size
+
+    print(f"[{datetime.now()}] ToysRUs new matched products: {total_found}")
 
 def main():
 
