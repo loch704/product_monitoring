@@ -1,8 +1,6 @@
 import requests
 import os
 from datetime import datetime
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 
 print(f"[{datetime.now()}] Monitor Started")
 
@@ -135,21 +133,27 @@ https://www.hobbylandeshop.com{product['link']}
 '''
 
 def monitor_toysrus(known_products):
-    url = "https://www.toysrus.com.hk/zh-hk/whats-on/new-arrivals/pre-order/"
+    url = (
+        "https://www.toysrus.com.hk/on/demandware.store/"
+        "Sites-ToysRUs_HK-Site/zh_HK/"
+        "Search-UpdateGrid"
+    )
+    
+    params = {
+        "cgid": "preorder_hk",
+        "start": 0,
+        "sz": 48
+    }
+    
     html = requests.get(
         url,
+        params=params,
         headers={
             "User-Agent": "Mozilla/5.0"
         }
     ).text
     
-    soup = BeautifulSoup(html, "html.parser")
-    
-    for a in soup.find_all("a"):
-        href = a.get("href")
-        
-        if href and "/product/" in href:
-            print(href)
+    print(html[:5000])
 
 def main():
 
