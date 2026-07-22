@@ -134,15 +134,16 @@ https://www.hobbylandeshop.com{product['link']}
 '''
 
 def monitor_toysrus(known_products):
-    import requests
     url = "https://www.toysrus.com.hk/zh-hk/whats-on/new-arrivals/pre-order/"
     html = requests.get(
-    url,
-    headers={
-        "User-Agent": "Mozilla/5.0"
-    }
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0"
+        }
     ).text
-    print(html[:3000])
+    
+    soup = BeautifulSoup(html, "html.parser")
+    print(soup.get_text("\n"))
 
 def main():
 
