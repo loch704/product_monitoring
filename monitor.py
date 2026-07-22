@@ -7,6 +7,15 @@ print(f"[{datetime.now()}] Monitor Started")
 BOT_TOKEN = "YOUR_TOKEN"
 CHAT_ID = "YOUR_CHAT_ID"
 
+KEYWORDS = [
+    "arranged wigs",
+    "beyblade",
+    "beybladex",
+    "beyblade x",
+    "ux-21",
+    "ux21"
+]
+
 def send_telegram(message):
 
     requests.post(
