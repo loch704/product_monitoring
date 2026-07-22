@@ -18,15 +18,18 @@ KEYWORDS = [
 
 def send_telegram(message):
 
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    print(url)
+    
     response = requests.post(
-        f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+        url,
         data={
             "chat_id": CHAT_ID,
             "text": message
         }
     )
-
-    print(f"Telegram Status: {response.status_code}")
+    
+    print(response.status_code)
     print(response.text)
 
     return response
