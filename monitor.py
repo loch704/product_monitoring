@@ -18,13 +18,18 @@ KEYWORDS = [
 
 def send_telegram(message):
 
-    requests.post(
+    response = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
         data={
             "chat_id": CHAT_ID,
             "text": message
         }
     )
+
+    print(f"Telegram Status: {response.status_code}")
+    print(response.text)
+
+    return response
 
 def monitor_lastchance(known_products):
 
