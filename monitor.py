@@ -31,7 +31,7 @@ def monitor_lastchance(known_products):
     print(f"[{datetime.now()}] Checking LastChanceToy")
     
     data = requests.get(
-        "https://lastchancetoy.com/products.json"
+        "https://lastchancetoy.com/products.json?limit=250"
     ).json()
 
     print(f"[{datetime.now()}] Total Products: {len(data['products'])}")
