@@ -21,8 +21,6 @@ KEYWORDS = [
 def send_telegram(message):
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    print(url)
-    
     response = requests.post(
         url,
         data={
@@ -30,10 +28,6 @@ def send_telegram(message):
             "text": message
         }
     )
-    
-    print(response.status_code)
-    print(response.text)
-
     return response
 
 def monitor_lastchance(known_products):
@@ -44,10 +38,8 @@ def monitor_lastchance(known_products):
         "https://lastchancetoy.com/products.json?limit=250"
     ).json()
 
-    print(f"[{datetime.now()}] Total Products: {len(data['products'])}")
-
-    for product in data["products"][:10]:
-        print(product["title"])
+    #for product in data["products"][:10]:
+    #    print(product["title"])
     
     for product in data["products"]:
 
