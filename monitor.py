@@ -32,7 +32,6 @@ def send_telegram(message):
     )
     return response
 
-'''
 def monitor_lastchance(known_products):
 
     print(f"[{datetime.now()}] Checking LastChanceToy")
@@ -131,7 +130,6 @@ https://www.hobbylandeshop.com{product['link']}
         print(
             f"[{datetime.now()}] Notify: {title}"
         )
-'''
 
 def monitor_toysrus(known_products):
 
@@ -267,8 +265,8 @@ def main():
                 for line in f
             }
 
-    #monitor_lastchance(known_products)
-    #monitor_hobbyland(known_products)
+    monitor_lastchance(known_products)
+    monitor_hobbyland(known_products)
     monitor_toysrus(known_products)
 
     with open(
