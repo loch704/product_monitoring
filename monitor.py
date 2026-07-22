@@ -134,89 +134,15 @@ https://www.hobbylandeshop.com{product['link']}
 '''
 
 def monitor_toysrus(known_products):
-
-    print(f"[{datetime.now()}] Checking ToysRUs HK")
-
-    url = "https://www.toysrus.com.hk/zh-hk/"
-
-    headers = {
+    import requests
+    url = "https://www.toysrus.com.hk/zh-hk/whats-on/new-arrivals/pre-order/"
+    html = requests.get(
+    url,
+    headers={
         "User-Agent": "Mozilla/5.0"
     }
-
-    response = requests.get(
-        url,
-        headers=headers,
-        timeout=20
-    )
-
-    print(f"[{datetime.now()}] ToysRUs Status: {response.status_code}")
-
-    html = response.text
-
-    soup = BeautifulSoup(html, "html.parser")
-
-    links = soup.find_all("a")
-
-    found_count = 0
-
-    for a in links:
-
-        title = a.get_text(" ", strip=True)
-        href = a.get("href")
-
-        if not title:
-            continue
-
-        if not href:
-            continue
-
-        # keyword filtering
-        if not any(
-            k.lower() in title.lower()
-            for k in KEYWORDS
-        ):
-            continue
-
-        full_link = urljoin(
-            "https://www.toysrus.com.hk",
-            href
-        )
-
-        # source-specific dedup
-        product_id = f"toysrus|{full_link}"
-
-        if product_id in known_products:
-            print(f"[{datetime.now()}] Skip known ToysRUs: {title}")
-            continue
-
-        # basic stock text check
-        lower_text = title.lower()
-
-        if "暫時缺貨" in title or "out of stock" in lower_text:
-            print(f"[{datetime.now()}] Skip out of stock ToysRUs: {title}")
-            continue
-
-        message = f"""
-🚨 New Product Found
-
-Source: ToysRUs HK
-
-{title}
-
-{full_link}
-"""
-
-        send_telegram(message)
-
-        known_products.add(product_id)
-
-        found_count += 1
-
-        print(f"[{datetime.now()}] Notify ToysRUs: {title}")
-
-    print(f"[{datetime.now()}] ToysRUs matched new products: {found_count}")
-    print(f"[{datetime.now()}] Candidate ToysRUs: {title}")
-    print(full_link)
+    ).text
+    print(html[:3000])
 
 def main():
 
