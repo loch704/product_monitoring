@@ -1,8 +1,11 @@
 import requests
 import os
+from datetime import datetime
 
-BOT_TOKEN = "8872232866:AAFrLRFygu-w7f2lrPCPeeZtZoAX-2VavuE"
-CHAT_ID = "354370983"
+print(f"[{datetime.now()}] Monitor Started")
+
+BOT_TOKEN = "YOUR_TOKEN"
+CHAT_ID = "YOUR_CHAT_ID"
 
 URL = "https://lastchancetoy.com/products.json"
 
@@ -22,6 +25,8 @@ if os.path.exists("notified_products.txt"):
     with open("notified_products.txt", "r", encoding="utf-8") as f:
         known_products = {line.strip() for line in f}
 
+print(f"[{datetime.now()}] Checking LastChanceToy")
+
 data = requests.get(URL).json()
 
 new_products = []
@@ -32,20 +37,22 @@ for product in data["products"]:
 
     if any(k.lower() in title.lower() for k in KEYWORDS):
 
-        product_id = str(product["id"])
+        # 加 Source Prefix
+        product_id = f"lastchance|{product['id']}"
 
-        # 未通知過
         if product_id not in known_products:
 
             message = f"""
 🚨 New Product Found
+
+Source: LastChanceToy
 
 {title}
 
 https://lastchancetoy.com/products/{product['handle']}
 """
 
-            requests.post(
+            response = requests.post(
                 f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
                 data={
                     "chat_id": CHAT_ID,
@@ -53,7 +60,13 @@ https://lastchancetoy.com/products/{product['handle']}
                 }
             )
 
-            print(f"Notify: {title}")
+            print(
+                f"[{datetime.now()}] Notify: {title}"
+            )
+
+            print(
+                f"[{datetime.now()}] Telegram Status: {response.status_code}"
+            )
 
             new_products.append(product_id)
 
@@ -62,3 +75,5 @@ if new_products:
     with open("notified_products.txt", "a", encoding="utf-8") as f:
         for item in new_products:
             f.write(item + "\n")
+
+print(f"[{datetime.now()}] Monitor Finished")
