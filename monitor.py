@@ -32,7 +32,7 @@ def monitor_lastchance(known_products):
     print(f"[{datetime.now()}] Total Products: {len(data['products'])}")
 
     for product in data["products"][:10]:
-    print(product["title"])
+        print(product["title"])
     
     data = requests.get(
         "https://lastchancetoy.com/products.json"
