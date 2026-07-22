@@ -38,9 +38,6 @@ def monitor_lastchance(known_products):
         "https://lastchancetoy.com/products.json?limit=250"
     ).json()
 
-    #for product in data["products"][:10]:
-    #    print(product["title"])
-    
     for product in data["products"]:
 
         title = product["title"]
@@ -74,6 +71,64 @@ https://lastchancetoy.com/products/{product['handle']}
             f"[{datetime.now()}] Notify: {title}"
         )
 
+def monitor_hobbyland(known_products):
+
+    print(f"[{datetime.now()}] Checking Hobbyland")
+
+    payload = {
+        "page": 1,
+        "category": ["nproduct_booking"],
+        "stockStatus": "in_stock"
+    }
+
+    headers = {
+        "Origin": "https://www.hobbylandeshop.com",
+        "Referer": "https://www.hobbylandeshop.com/",
+        "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    response = requests.post(
+        "https://backend.hobbylandeshop.com/api/products",
+        json=payload,
+        headers=headers
+    )
+
+    data = response.json()
+
+    for product in data["data"]["list"]:
+
+        title = product["title"]
+
+        if not any(
+            k.lower() in title.lower()
+            for k in KEYWORDS
+        ):
+            continue
+
+        product_id = f"hobbyland|{product['sku']}"
+
+        if product_id in known_products:
+            continue
+
+        message = f"""
+🚨 New Product Found
+
+Source: Hobbyland
+
+{title}
+
+https://www.hobbylandeshop.com{product['link']}
+"""
+
+        send_telegram(message)
+
+        known_products.add(product_id)
+
+        print(
+            f"[{datetime.now()}] Notify: {title}"
+        )
+
 def main():
 
     known_products = set()
@@ -91,7 +146,7 @@ def main():
             }
 
     monitor_lastchance(known_products)
-    #monitor_hobbyland(known_products)
+    monitor_hobbyland(known_products)
 
     with open(
         "notified_products.txt",
