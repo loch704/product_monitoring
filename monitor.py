@@ -4,8 +4,8 @@ from datetime import datetime
 
 print(f"[{datetime.now()}] Monitor Started")
 
-BOT_TOKEN = "YOUR_TOKEN"
-CHAT_ID = "YOUR_CHAT_ID"
+BOT_TOKEN = "8872232866:AAFrLRFygu-w7f2lrPCPeeZtZoAX-2VavuE"
+CHAT_ID = "354370983"
 
 KEYWORDS = [
     "arranged wigs",
