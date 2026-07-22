@@ -1,6 +1,8 @@
 import requests
 import os
 from datetime import datetime
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 print(f"[{datetime.now()}] Monitor Started")
 
