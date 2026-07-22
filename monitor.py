@@ -11,6 +11,7 @@ CHAT_ID = "354370983"
 
 KEYWORDS = [
     "arranged wigs",
+    "i-smart",
     "beyblade",
     "beybladex",
     "beyblade x",
@@ -143,7 +144,12 @@ def monitor_toysrus(known_products):
     ).text
     
     soup = BeautifulSoup(html, "html.parser")
-    print(soup.get_text("\n"))
+    
+    for a in soup.find_all("a"):
+        href = a.get("href")
+        
+        if href and "/product/" in href:
+            print(href)
 
 def main():
 
