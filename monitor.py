@@ -14,10 +14,8 @@ KEYWORDS = [
     "beyblade",
     "beybladex",
     "beyblade x",
-    "ux-21",
-    "ux21",
-    "bx-49",
-    "bx49"
+    "beyblade-x",
+    "爆旋陀螺"
 ]
 
 def send_telegram(message):
