@@ -30,6 +30,31 @@ def send_telegram(message):
     )
     return response
 
+def build_message(source, sku, price, title, link):
+
+    return f"""
+🚨 Product Match Found
+
+Source : {source}
+SKU    : {sku}
+Price  : {price}
+
+Product:
+{title}
+
+Link:
+{link}
+"""
+
+def write_log(source, sku, title):
+
+    print(
+        f"[{datetime.now()}] "
+        f"[{source}] "
+        f"[{sku}] "
+        f"{title}"
+    )
+
 def monitor_lastchance(known_products):
 
     print(f"[{datetime.now()}] Checking LastChanceToy")
@@ -53,22 +78,22 @@ def monitor_lastchance(known_products):
         if product_id in known_products:
             continue
 
-        message = f"""
-🚨 New Product Found
-
-Source: LastChanceToy
-
-{title}
-
-https://lastchancetoy.com/products/{product['handle']}
-"""
+        message = build_message(
+            source="LastChanceToy",
+            sku=product["id"],
+            price="N/A",
+            title=title,
+            link=f"https://lastchancetoy.com/products/{product['handle']}"
+        )
 
         send_telegram(message)
 
         known_products.add(product_id)
 
-        print(
-            f"[{datetime.now()}] Notify: {title}"
+        write_log(
+            "LastChanceToy",
+            product["id"],
+            title
         )
 
 def monitor_hobbyland(known_products):
@@ -111,22 +136,22 @@ def monitor_hobbyland(known_products):
         if product_id in known_products:
             continue
 
-        message = f"""
-🚨 New Product Found
-
-Source: Hobbyland
-
-{title}
-
-https://www.hobbylandeshop.com{product['link']}
-"""
-
+        message = build_message(
+            source="Hobbyland",
+            sku=product["sku"],
+            price=product.get("price", "N/A"),
+            title=title,
+            link=f"https://www.hobbylandeshop.com{product['link']}"
+        )
+        
         send_telegram(message)
 
         known_products.add(product_id)
 
-        print(
-            f"[{datetime.now()}] Notify: {title}"
+        write_log(
+            "Hobbyland",
+            product["sku"],
+            title
         )
 
 def monitor_toysrus(known_products):
@@ -220,24 +245,24 @@ def monitor_toysrus(known_products):
                 print(f"[{datetime.now()}] Skip known ToysRUs: {title}")
                 continue
 
-            message = f"""
-🚨 New Product Found
-
-Source: ToysRUs HK
-
-{title}
-
-Price: ${price}
-
-{product_link}
-"""
+           message = build_message(
+            source="ToysRUs HK",
+            sku=product_id_raw,
+            price=f"${price}",
+            title=title,
+            link=product_link
+        )
 
             send_telegram(message)
 
             known_products.add(unique_id)
             total_found += 1
 
-            print(f"[{datetime.now()}] Notify ToysRUs: {title}")
+            write_log(
+                "ToysRUs HK",
+                product_id_raw,
+                title
+            )
 
         # If page has fewer than size, no more pages
         if len(product_tiles) < size:
