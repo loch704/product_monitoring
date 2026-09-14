@@ -244,15 +244,15 @@ def monitor_toysrus(known_products):
             if unique_id in known_products:
                 print(f"[{datetime.now()}] Skip known ToysRUs: {title}")
                 continue
-
-           message = build_message(
-            source="ToysRUs HK",
-            sku=product_id_raw,
-            price=f"${price}",
-            title=title,
-            link=product_link
-        )
-
+                
+                message = build_message(
+                    source="ToysRUs HK",
+                    sku=product_id_raw,
+                    price=f"${price}",
+                    title=title,
+                    link=product_link
+                )
+                
             send_telegram(message)
 
             known_products.add(unique_id)
