@@ -16,6 +16,7 @@ KEYWORDS = [
     "beyblade x",
     "beyblade-x",
     "爆旋陀螺"
+    "Yo-Spin"
 ]
 
 def send_telegram(message):
